@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 function App() {
   const [datafile, setdatafile] = useState({});
   const [highlightfile, sethighlightfile] = useState([]);
-  const [inclusions, setinclusions] = useState([]);
-  const [empty, setempty] = useState(true);
   async function fetchingApi() {
     //fetching data_file
     let response1 = await fetch("./data/data_file.json");
@@ -18,10 +16,8 @@ function App() {
   useEffect(() => {
     fetchingApi();
   }, []);
-  console.log(datafile);
-  console.log(highlightfile);
-
   let inclusion = new Set();
+  let exclusion = new Set();
   highlightfile.map(item => {
     let { annotations } = item.annotations;
     for (let i of Object.values(annotations)) {
@@ -31,9 +27,39 @@ function App() {
           inclusion.add(j);
         }
       }
+      if (i.exclusion.length !== 0) {
+        // console.log(i.inclusion);
+        for (let j of i.exclusion) {
+          exclusion.add(j);
+        }
+      }
     }
   });
-
+  console.log(exclusion);
+  let filedata,
+    tabledata,
+    maindata = [];
+  Object.keys(datafile).map(function(key, index) {
+    var secdata = datafile[key];
+    Object.keys(secdata).map(function(key1, index) {
+      if (typeof secdata[key1] == "object" && key1 === "file") {
+        filedata = secdata[key1];
+        Object.keys(filedata).filter(function(key2, index) {
+          if ("text_extract" in filedata[key2]) {
+            var parserdata = filedata[key2];
+            Object.keys(parserdata).filter(function(key3, index) {
+              tabledata = parserdata[key3];
+              Object.keys(tabledata).filter(function(key4, index) {
+                if (key4 === "tables_xml" && tabledata[key4].length !== 0)
+                  maindata.push(tabledata[key4]);
+              });
+            });
+          }
+        });
+      }
+    });
+  });
+  console.log(maindata);
   return (
     <div className="App">
       <table style={{ width: "100%" }}>
