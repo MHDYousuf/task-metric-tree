@@ -7,7 +7,7 @@
       "main_condition": "epy",
       "patient_label": 1,
       "annotations": {
-        "encounters": {
+        "encounters": { 
           "inclusion": ["epileptic", "epilepsy"],
           "exclusion": ["icd10", "icd9", "headache"],
           "vague": []
