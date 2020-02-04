@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 function App() {
   const [datafile, setdatafile] = useState({});
   const [highlightfile, sethighlightfile] = useState([]);
-  const [inclusion, setinclusion] = useState(new Set());
-  const [exclusion, setexclusion] = useState(new Set());
-
+  const [inclusions, setinclusions] = useState([]);
+  const [empty, setempty] = useState(true);
   async function fetchingApi() {
     //fetching data_file
     let response1 = await fetch("./data/data_file.json");
@@ -22,20 +21,24 @@ function App() {
   console.log(datafile);
   console.log(highlightfile);
 
+  let inclusion = new Set();
   highlightfile.map(item => {
     let { annotations } = item.annotations;
-    console.log(annotations);
+    for (let i of Object.values(annotations)) {
+      if (i.inclusion.length !== 0) {
+        // console.log(i.inclusion);
+        for (let j of i.inclusion) {
+          inclusion.add(j);
+        }
+      }
+    }
   });
 
   return (
     <div className="App">
       <table style={{ width: "100%" }}>
         <thead>
-          <tr>
-            <th>hello</th>
-            <th>hello</th>
-            <th>hello</th>
-          </tr>
+          <tr></tr>
         </thead>
       </table>
     </div>
